@@ -1,0 +1,22 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboothello
+  labels:
+    app: springboothello
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: springboothello
+  template:
+    metadata:
+      labels:
+        app: springboothello
+    spec:
+      containers:
+      - name: springboothello
+        image: naresh240/springboothello:latest
+        ports:
+        - containerPort: 8080
