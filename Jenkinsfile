@@ -23,8 +23,8 @@ pipeline{
         stage("Deploy to Sonar") {
             agent any
             steps{
-				withSonarQubeEnv(installationName: 'sonarqube', credentialsId: 'sonar-token') {
-					sh "${ tool ("sonar-scanner")}/sonar-scanner -Dsonar.projectKey=hellospringboot -Dsonar.projectName=hellospringboot -Dsonar.sourceEncoding=UTF-8 -Dsonar.sources=src"
+		withSonarQubeEnv(installationName: 'sonarqube', credentialsId: 'sonar-token') {
+			sh "${ tool ("sonar-scanner")}/sonar-scanner -Dsonar.projectKey=hellospringboot -Dsonar.projectName=hellospringboot -Dsonar.sourceEncoding=UTF-8 -Dsonar.sources=src"
                 }
             }
         }		
@@ -45,17 +45,17 @@ pipeline{
             }
         }
         stage('Deployment'){
-			steps{
-				withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_Credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-					withCredentials([kubeconfigFile(credentialsId: 'kubernetes_credentials', variable: 'KUBECONFIG')]) {
-					sh """
-					cat deployement.yml | sed "s/{{ImageTag}}/${ImageTag}/g" | kubectl apply -f -
-					kubectl apply -f service.yml
-					kubectl apply -f ingress.yaml
-					"""
-				  }
-			   }
-			}
-        }
-	}
+	   steps{
+		withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_Credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+			withCredentials([kubeconfigFile(credentialsId: 'kubernetes_credentials', variable: 'KUBECONFIG')]) {
+			sh """
+			cat deployement.yml | sed "s/{{ImageTag}}/${ImageTag}/g" | kubectl apply -f -
+			kubectl apply -f service.yml
+			kubectl apply -f ingress.yaml
+			"""
+		}
+             }
+   	 }
+      }
+   }
 }
