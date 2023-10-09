@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: springboothello
-        image: naresh240/springboothello:latest
+        image: raviu2500/springboothello:latest
         ports:
         - containerPort: 8080
